@@ -2,9 +2,13 @@
 
   <div id="details_section" class="section top">
     <h2 class="section-title">Details</h2>
-    <div class="input">
+
+    <!-- Utiliser textearea plutôt que input -->
+    <!-- <div class="input">
       <input id='details' type="input" class="input__field" placeholder="add some details">
-    </div>
+    </div> -->
+
+    <textarea id="details" class="textarea type" rows="1" placeholder="type some details"></textarea>
   </div>
 
   <div id="links_section" class="section">
@@ -76,6 +80,24 @@ document.getElementById('addLink').addEventListener('click', function () {
 //   parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
 // }
 
+
+// ========== ADAPTE LA HAUTEUR DU TEXTAREA AU CONTENU ========== //
+
+// Fonction pour ajuster la hauteur
+function adjustTextareaHeight(textarea) {
+  textarea.style.height = 'auto'; // Réinitialiser la hauteur
+  textarea.style.height = textarea.scrollHeight + 2 + 'px'; // Définir la nouvelle hauteur
+}
+
+// Sélectionner la zone de texte
+const textarea = document.getElementById('details');
+
+// Ajouter un écouteur d'événements pour ajuster la hauteur
+textarea.addEventListener('input', function() {
+  adjustTextareaHeight(this);
+});
+
+
 </script>
 
 <style>
@@ -114,6 +136,23 @@ document.getElementById('addLink').addEventListener('click', function () {
   .section-title {
     margin: 0;
     padding: 8px;
+  }
+
+
+  #details.textarea {
+    min-height: 50px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    padding: 8px 7px;
+  }
+
+  #details.textarea:hover {
+    box-sizing: border-box;
+    border-color: rgba(0, 0, 0, 0.10);
+  }
+
+  #details.textarea:focus, #details.textarea:active {
+    outline: 2px solid rgba(24, 160, 251, 1);
   }
 
   .input__field {
