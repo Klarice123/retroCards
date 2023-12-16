@@ -1,0 +1,171 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/figma-plugin-ds@1.0.1/dist/figma-plugin-ds.min.css">
+
+  <div id="details_section" class="section top">
+    <h2 class="section-title">Details</h2>
+    <div class="input">
+      <input id='details' type="input" class="input__field" placeholder="add some details">
+    </div>
+  </div>
+
+  <div id="links_section" class="section">
+
+    <div id="linksHeader">
+      <h2 class="section-title enabled">Links</h2>
+      <div id="addLink" class="icon-button">
+        <div class="icon icon--plus"></div>
+      </div>
+    </div>
+
+    <div id= "linksContainer">
+      <!-- ajout des liens -->
+    </div>
+  </div>
+
+
+
+
+
+
+
+<script>
+
+onmessage = (event) => {
+      const details = event.data.pluginMessage.details;
+      document.getElementById('details').value = details;
+    }
+
+document.getElementById('details').addEventListener('input', function () {
+  const details = document.getElementById('details').value;
+  parent.postMessage({ pluginMessage: { details } }, '*')
+})
+
+
+document.getElementById('addLink').addEventListener('click', function () {
+  // Création d'un nouvel élément div avec le contenu HTML
+  var newLinkContainer = document.createElement('div');
+  newLinkContainer.className = 'linkContainer';
+  newLinkContainer.innerHTML = `
+    <div class="input__field">
+      <input type="input"  placeholder="link name" class="input_label">
+      <input type="input"  placeholder="https://..." class="input_link">
+    </div>
+    <div class="icon-button remove">
+      <div class="icon icon--minus"></div>
+    </div>
+  `;
+
+  // Ajout du nouvel élément à linksContainer (sans remplacer le contenu existant)
+  document.getElementById('linksContainer').appendChild(newLinkContainer);
+
+  // Ajout du gestionnaire d'événements au bouton "remove" du nouvel élément
+  newLinkContainer.querySelector('.remove').addEventListener('click', function () {
+    this.parentNode.remove();
+  });
+});
+
+
+
+
+// document.getElementById('create').onclick = () => {
+//   const textbox = document.getElementById('count');
+//   const count = parseInt(textbox.value, 10);
+//   parent.postMessage({ pluginMessage: { type: 'create-shapes', count } }, '*')
+// }
+
+// document.getElementById('cancel').onclick = () => {
+//   parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
+// }
+
+</script>
+
+<style>
+  .linkContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #modal {
+    padding: 8px;
+  }
+  .section {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: left;
+    padding: 8px;
+  }
+
+  .top {
+    border-bottom: solid 1px rgba(0, 0, 0, 0.10);
+  }
+
+  #linksHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .input_label {
+      border-color: transparent;
+  }
+  .input_link {
+    border-color: transparent;
+  }
+
+  .section-title {
+    margin: 0;
+    padding: 8px;
+  }
+
+  .input__field {
+    padding: 8px 7px;
+  }
+
+  .input__field:placeholder-shown {
+    border: 1px solid transparent;
+  }
+
+  .input_label {
+    font-size: var(--font-size-xsmall);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: var(--font-letter-spacing-neg-xsmall);
+    line-height: var(--line-height);
+    color: rgba(0, 0, 0, 0.80);
+    width: 80px;
+    padding: 0;
+    border: 0;
+  }
+
+  .input_label::placeholder {
+    color:rgba(0, 0, 0, 0.30)
+  }
+
+  .input_link {
+    font-size: var(--font-size-xsmall);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: var(--font-letter-spacing-neg-xsmall);
+    line-height: var(--line-height);
+    color: rgba(0, 0, 0, 0.80);
+    width: 100px;
+    padding: 0;
+    border: 0;
+  }
+
+  .input_link::placeholder {
+    color:rgba(0, 0, 0, 0.30)
+  }
+
+  .input_label:active, .input_label:focus {
+    color: var(--black);
+    border: 1px solid transparent;
+    outline: 1px solid transparent;
+    outline-offset: -2px;
+}
+
+  .input_link:active, .input_link:focus {
+      color: var(--black);
+      border: 1px solid transparent;
+      outline: 1px solid transparent;
+      outline-offset: -2px;
+  }
+
+</style>
