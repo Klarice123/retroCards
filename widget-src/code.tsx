@@ -169,11 +169,16 @@ function Widget() {
         }
         else if (propertyName === 'progression') {
             setProgression(propertyValue)
-            if (propertyValue === 'to discuss') setProgressionColor(todiscussColor)
-            if (propertyValue === 'to do') setProgressionColor(todoColor)
-            if (propertyValue === 'in progress') setProgressionColor(inprogressColor)
-            if (propertyValue === 'done') setProgressionColor(doneColor)
-            if (propertyValue === 'cancelled') setProgressionColor(cancelledColor)
+
+            const progressionColors = {
+                'to discuss': todiscussColor,
+                'to do': todoColor,
+                'in progress': inprogressColor,
+                'done': doneColor,
+                'cancelled': cancelledColor,
+            }
+
+            setProgressionColor(progressionColors[propertyValue])
 
         }
 
@@ -188,9 +193,9 @@ function Widget() {
     const openDetails = () => {
         console.log('state ', details)
         figma.showUI(__html__, { width: 400, height: 200, title: 'Story details' })
-    
+
         figma.ui.postMessage({ details })
-    
+
         figma.ui.onmessage = pluginMessage => {
             setDetails(pluginMessage.details)
         }
@@ -220,14 +225,14 @@ function Widget() {
                     y: 8,
                 },
                 blur: 0,
-        
+
             }}
             width={320}
             opacity={cardOpacity}
             cornerRadius={8}
 
         >
-      
+
             <AutoLayout
                 name='top container'
                 verticalAlignItems={'center'}
@@ -324,7 +329,7 @@ function Widget() {
                 spacing={4}
                 onClick={() =>
                     new Promise(() => {
-              
+
                         openDetails()
 
                     })
