@@ -149,14 +149,14 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.56.0.tgz"
   integrity sha512-gMsVel9D7f2HLkBma9VbtzZRehRogVRfbr++f06nL2vnCGCNlzOD+/MUov/F4p8myyAHspEhVobgjpX64q5m6A==
 
-"@figma/plugin-typings@*":
-  version "1.81.0"
-  resolved "https://registry.npmjs.org/@figma/plugin-typings/-/plugin-typings-1.81.0.tgz"
-  integrity sha512-gy/q4Aa/oVmN9PxdrUyuiMpoBpXAkGIpbe4nqHiKK1TDjrxW3ZBwmYzCM3uGUTC63xhwk99vExbBxaHsoSrAGw==
+"@figma/plugin-typings@^1.81.0":
+  version "1.82.0"
+  resolved "https://registry.yarnpkg.com/@figma/plugin-typings/-/plugin-typings-1.82.0.tgz#7f8c8514bb18dc303e3b194b60827fec1f2a5e9f"
+  integrity sha512-To5M9VRpNysrGGtZtPF5Ke9eobfhTUr7kieAsYMhpPg+VKdr0EM6XDFtCqhtuDrLfPAZFa/cBQo68auWwD4mlA==
 
-"@figma/widget-typings@*":
+"@figma/widget-typings@^1.9.1":
   version "1.9.1"
-  resolved "https://registry.npmjs.org/@figma/widget-typings/-/widget-typings-1.9.1.tgz"
+  resolved "https://registry.yarnpkg.com/@figma/widget-typings/-/widget-typings-1.9.1.tgz#318823404ef21b3fbc15aba1e5b8d7f142a303cb"
   integrity sha512-jmh/hsBxLP4aKgtbmxkJe84Ufk93S7TwOxpLD7L58R472boU5vyZ7qF5DKlhwiRjF0sgaryXJxSXuIjdR1GBXQ==
 
 "@humanwhocodes/config-array@^0.11.13":
