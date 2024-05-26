@@ -243,15 +243,17 @@ const linkIcon = `
 
   const [details, setDetails] = useSyncedState<string>('details', '')
   const [links, setLinks] = useSyncedState('links', {})
+  const [windowHeight, setWindowHeight] = useSyncedState<number>('windowHeight', 200)
 
   const openDetails = () => {
-    figma.showUI(__html__, { width: 400, height: 200, title: 'Story details' })
+    figma.showUI(__html__, { width: 400, height: windowHeight, title: 'Story details' })
 
     figma.ui.postMessage({ details, links })
-
     figma.ui.onmessage = pluginMessage => {
       setDetails(pluginMessage.details.value)
       setLinks(pluginMessage.links)
+      setWindowHeight(pluginMessage.windowHeight)
+      figma.ui.resize(400, pluginMessage.windowHeight);
     }
     //figma.closePlugin();
   }
@@ -299,6 +301,8 @@ const linkIcon = `
         </AutoLayout>
     )
   })
+
+  console.log('links : ',links)
 
   return (
     <AutoLayout
