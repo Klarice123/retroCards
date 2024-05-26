@@ -33,52 +33,151 @@
 
 <script>
 
-onmessage = (event) => {
-      const details = event.data.pluginMessage.details;
-      document.getElementById('details').value = details;
+let details = {
+    value: ''
+};
+
+let detailsProxy = new Proxy(details, {
+    set(target, property, value) {
+        if (property === 'value') {
+            target[property] = value;
+            onChange();
+            return true;
+        }
+        return false;
+    }
+})
+let nextLinkIndex;
+let links = {};
+let linksProxy = new Proxy(links, {
+    set(target, property, value) {
+        target[property] = value;
+        onChange();
+        return true;
+    },
+    deleteProperty(target, property) {
+        delete target[property];
+        onChange();
+        return true;
+    }
+});
+
+function replaceLinks(newLinks) {
+    // delete old properties
+    for (let key in linksProxy) {
+        if (linksProxy.hasOwnProperty(key)) {
+            delete linksProxy[key];
+        }
     }
 
+    // add new properties
+    for (let key in newLinks) {
+        if (newLinks.hasOwnProperty(key)) {
+            linksProxy[key] = newLinks[key];
+        }
+    }
+}
+
+const buildLinksArea = (event) => {
+
+  const existingLinks = event.data.pluginMessage.links
+  replaceLinks(existingLinks)
+
+  let keys = Object.keys(event.data.pluginMessage.links); // ['a', 'b', 'c']
+  nextLinkIndex = keys.length + 1
+
+for (const item in links) {
+    let index = keys.indexOf(item);
+
+    var newLinkContainer = document.createElement('div');
+    newLinkContainer.className = 'linkContainer';
+    newLinkContainer.innerHTML = `
+      <div class="input__field">
+        <input type="input"  placeholder="link name" class="input_label" data-id="${index}" value='${links[item].label}'>
+        <input type="input"  placeholder="https://..." class="input_link" data-id="${index}" value='${links[item].link}'>
+      </div>
+      <div class="icon-button remove">
+        <div class="icon icon--minus"></div>
+      </div>
+    `;
+    // add new link to linksContainer (without replacing existing content)
+    document.getElementById('linksContainer').appendChild(newLinkContainer);
+
+    newLinkContainer.querySelector('.remove').addEventListener('click', function () {
+      delete linksProxy[this.parentNode.querySelector('.input_label').dataset.id];
+      this.parentNode.remove();
+    });
+
+    newLinkContainer.querySelector('.input_label').addEventListener('input', function () {
+      linksProxy[this.dataset.id].label = this.value; 
+    })
+
+    newLinkContainer.querySelector('.input_link').addEventListener('input', function () {
+      linksProxy[this.dataset.id].link = this.value; 
+    })
+}
+}
+
+const buildDetailsArea = (event) => {
+  detailsProxy.value = event.data.pluginMessage.details
+  document.getElementById('details').value = details.value
+
+  adjustTextareaHeight(document.getElementById('details'))
+}
+
+function onChange() {
+  parent.postMessage({ pluginMessage: { links, details } }, '*');
+}
+
+onmessage = (event) => {
+  
+  buildDetailsArea(event)
+  buildLinksArea(event)
+
+}
+
 document.getElementById('details').addEventListener('input', function () {
-  const details = document.getElementById('details').value;
-  parent.postMessage({ pluginMessage: { details } }, '*')
+  detailsProxy.value = this.value;
+  parent.postMessage({ pluginMessage: { links, details } }, '*');
 })
 
-
 document.getElementById('addLink').addEventListener('click', function () {
-  // Création d'un nouvel élément div avec le contenu HTML
+  
+  linksProxy[nextLinkIndex] = { label: '', link: '' };
+
   var newLinkContainer = document.createElement('div');
   newLinkContainer.className = 'linkContainer';
   newLinkContainer.innerHTML = `
     <div class="input__field">
-      <input type="input"  placeholder="link name" class="input_label">
-      <input type="input"  placeholder="https://..." class="input_link">
+      <input type="input"  placeholder="link name" class="input_label" data-id="${nextLinkIndex}">
+      <input type="input"  placeholder="https://..." class="input_link" data-id="${nextLinkIndex}">
     </div>
     <div class="icon-button remove">
       <div class="icon icon--minus"></div>
     </div>
   `;
 
-  // Ajout du nouvel élément à linksContainer (sans remplacer le contenu existant)
   document.getElementById('linksContainer').appendChild(newLinkContainer);
 
-  // Ajout du gestionnaire d'événements au bouton "remove" du nouvel élément
   newLinkContainer.querySelector('.remove').addEventListener('click', function () {
+    const linkToRemoveIndex = this.parentNode.querySelector('.input_label').dataset.id
+    delete linksProxy[linkToRemoveIndex];
     this.parentNode.remove();
   });
+
+  newLinkContainer.querySelector('.input_label').addEventListener('input', function () {
+    linksProxy[this.dataset.id].label = this.value; 
+    onChange()
+  })
+
+  newLinkContainer.querySelector('.input_link').addEventListener('input', function () {
+    linksProxy[this.dataset.id].link = this.value;
+    onChange() 
+  })
+
+  nextLinkIndex++
+
 });
-
-
-
-
-// document.getElementById('create').onclick = () => {
-//   const textbox = document.getElementById('count');
-//   const count = parseInt(textbox.value, 10);
-//   parent.postMessage({ pluginMessage: { type: 'create-shapes', count } }, '*')
-// }
-
-// document.getElementById('cancel').onclick = () => {
-//   parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
-// }
 
 
 // ========== ADAPTE LA HAUTEUR DU TEXTAREA AU CONTENU ========== //
@@ -96,7 +195,6 @@ const textarea = document.getElementById('details');
 textarea.addEventListener('input', function() {
   adjustTextareaHeight(this);
 });
-
 
 </script>
 
